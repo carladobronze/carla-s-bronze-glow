@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Início" },
@@ -18,7 +19,7 @@ export function Header() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 glass-effect">
+    <header className="sticky top-0 z-50 glass-effect dark:bg-background/80 dark:backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -49,8 +50,9 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CTA Button & Admin Link */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* CTA Button, Theme Toggle & Admin Link */}
+          <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/admin" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               Área Admin
             </Link>
@@ -62,13 +64,16 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="lg:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 

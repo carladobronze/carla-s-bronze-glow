@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Servicos from "./pages/Servicos";
 import Precos from "./pages/Precos";
@@ -21,31 +22,33 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/servicos" element={<Servicos />} />
-          <Route path="/precos" element={<Precos />} />
-          <Route path="/promocoes" element={<Promocoes />} />
-          <Route path="/agendamento" element={<Agendamento />} />
-          <Route path="/contato" element={<Contato />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="agendamentos" element={<AdminAgendamentos />} />
-            <Route path="financeiro" element={<AdminFinanceiro />} />
-            <Route path="promocoes" element={<AdminPromocoes />} />
-            <Route path="servicos" element={<AdminServicos />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/servicos" element={<Servicos />} />
+            <Route path="/precos" element={<Precos />} />
+            <Route path="/promocoes" element={<Promocoes />} />
+            <Route path="/agendamento" element={<Agendamento />} />
+            <Route path="/contato" element={<Contato />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="agendamentos" element={<AdminAgendamentos />} />
+              <Route path="financeiro" element={<AdminFinanceiro />} />
+              <Route path="promocoes" element={<AdminPromocoes />} />
+              <Route path="servicos" element={<AdminServicos />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

@@ -166,6 +166,10 @@
     @apply backdrop-blur-md bg-white/70 border border-white/20;
   }
 
+  .dark .glass-effect {
+    @apply bg-background/70 border-border/20;
+  }
+
   .shimmer {
     background: linear-gradient(
       90deg,
