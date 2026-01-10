@@ -12,7 +12,6 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,20 +20,9 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (error) throw error;
-        toast({ title: "Conta criada!", description: "Você já pode fazer login." });
-        setIsSignUp(false);
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate("/admin");
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      navigate("/admin");
     } catch (error: any) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
     } finally {
@@ -43,14 +31,15 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-rose-gold-light/10 to-nude-light p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-rose-gold-light/10 to-nude-light dark:from-background dark:via-primary/5 dark:to-background p-4">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="w-8 h-8 text-primary" />
             <span className="font-display text-2xl font-semibold">Espaço Carla</span>
           </div>
-          <h1 className="font-display text-3xl font-bold">{isSignUp ? "Criar Conta" : "Área Administrativa"}</h1>
+          <h1 className="font-display text-3xl font-bold">Área Administrativa</h1>
+          <p className="text-muted-foreground mt-2">Acesso restrito para administradores</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card-elegant p-8 space-y-6">
@@ -63,14 +52,8 @@ export default function AdminLogin() {
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
           </div>
           <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
-            {isLoading ? "Aguarde..." : isSignUp ? "Criar Conta" : "Entrar"}
+            {isLoading ? "Aguarde..." : "Entrar"}
           </Button>
-          <p className="text-center text-sm text-muted-foreground">
-            {isSignUp ? "Já tem conta?" : "Não tem conta?"}{" "}
-            <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-primary hover:underline">
-              {isSignUp ? "Fazer login" : "Criar conta"}
-            </button>
-          </p>
         </form>
       </motion.div>
     </div>
