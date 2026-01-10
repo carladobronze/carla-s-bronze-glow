@@ -64,11 +64,17 @@ export default function AdminAgendamentos() {
     cancelled: "Cancelado" 
   };
 
+  // Parse date string without timezone issues (YYYY-MM-DD)
+  const parseDateString = (dateStr: string) => {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   // Get appointments for a specific date
   const getAppointmentsForDate = (date: Date) => {
     return appointments?.filter(apt => 
-      isSameDay(new Date(apt.appointment_date), date)
-    ) || [];
+      isSameDay(parseDateString(apt.appointment_date), date)
+    ) || []
   };
 
   // Get dates with appointments for calendar highlighting
@@ -272,7 +278,7 @@ export default function AdminAgendamentos() {
                       </a>
                     </td>
                     <td className="p-4">{apt.services?.name || "—"}</td>
-                    <td className="p-4">{format(new Date(apt.appointment_date), "dd/MM/yyyy")}</td>
+                    <td className="p-4">{format(parseDateString(apt.appointment_date), "dd/MM/yyyy")}</td>
                     <td className="p-4">{apt.appointment_time.slice(0, 5)}</td>
                     <td className="p-4">R$ {Number(apt.price).toFixed(2).replace(".", ",")}</td>
                     <td className="p-4">

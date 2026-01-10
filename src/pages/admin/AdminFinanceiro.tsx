@@ -32,7 +32,7 @@ export default function AdminFinanceiro() {
           <tbody className="divide-y divide-border">
             {entries?.map((e) => (
               <tr key={e.id} className="hover:bg-muted/30">
-                <td className="p-4">{new Date(e.entry_date).toLocaleDateString("pt-BR")}</td>
+                <td className="p-4">{(() => { const [y, m, d] = e.entry_date.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("pt-BR"); })()}</td>
                 <td className="p-4">{e.service_name}</td>
                 <td className="p-4 text-green-600 font-medium">+ R$ {Number(e.amount).toFixed(2).replace(".", ",")}</td>
                 <td className="p-4">{paymentLabels[e.payment_method] || e.payment_method}</td>
