@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,6 +55,12 @@ export default function AdminLogin() {
             {isLoading ? "Aguarde..." : "Entrar"}
           </Button>
         </form>
+
+        <div className="text-center mt-6">
+          <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            ← Não sou admin, voltar ao site
+          </Link>
+        </div>
       </motion.div>
     </div>
   );
