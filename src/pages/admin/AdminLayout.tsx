@@ -75,7 +75,7 @@ export default function AdminLayout() {
           </button>
           <div className="flex items-center gap-2 ml-auto">
             <ThemeToggle />
-            <Link to="/" className="text-sm text-muted-foreground hover:text-primary hidden sm:block">Ver site</Link>
+            <Link to="/" className="text-sm text-muted-foreground hover:text-primary">Ver site</Link>
           </div>
         </header>
         <main className="p-4 lg:p-6 overflow-x-hidden"><Outlet /></main>
