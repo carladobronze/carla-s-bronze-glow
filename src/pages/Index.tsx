@@ -70,10 +70,10 @@ export default function Index() {
 
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button asChild variant="hero" size="xl">
-                  <a href="https://wa.me/5521999999999" target="_blank" rel="noopener noreferrer">
+                  <Link to="/agendamento">
                     <Calendar className="w-5 h-5" />
                     Agendar Horário
-                  </a>
+                  </Link>
                 </Button>
                 <Button asChild variant="outline" size="xl">
                   <Link to="/servicos">
