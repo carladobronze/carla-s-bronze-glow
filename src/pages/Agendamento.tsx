@@ -25,17 +25,16 @@ const appointmentSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
+const MAX_BOOKINGS_PER_SLOT = 3; // 3 máquinas disponíveis
+
 const timeSlots = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
-  "18:00", "18:30", "19:00"
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+  "15:00", "16:00", "17:00", "18:00", "19:00"
 ];
 
 const saturdaySlots = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+  "15:00", "16:00", "17:00"
 ];
 
 export default function Agendamento() {
@@ -82,7 +81,17 @@ export default function Agendamento() {
     enabled: !!formData.date,
   });
 
-  const occupiedSlots = existingAppointments?.map(a => a.appointment_time.slice(0, 5)) || [];
+  // Count bookings per slot
+  const slotCounts = (existingAppointments || []).reduce((acc, a) => {
+    const time = a.appointment_time.slice(0, 5);
+    acc[time] = (acc[time] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Slots that are fully booked (3 bookings)
+  const fullyBookedSlots = Object.entries(slotCounts)
+    .filter(([_, count]) => count >= MAX_BOOKINGS_PER_SLOT)
+    .map(([time]) => time);
 
   const createAppointment = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -151,7 +160,11 @@ export default function Agendamento() {
     if (!selectedDate) return [];
     const isSat = selectedDate.getDay() === 6;
     const slots = isSat ? saturdaySlots : timeSlots;
-    return slots.filter(slot => !occupiedSlots.includes(slot));
+    return slots.filter(slot => !fullyBookedSlots.includes(slot));
+  };
+
+  const getSlotsRemaining = (slot: string) => {
+    return MAX_BOOKINGS_PER_SLOT - (slotCounts[slot] || 0);
   };
 
   const selectedService = services?.find(s => s.id === formData.serviceId);
@@ -324,20 +337,29 @@ export default function Agendamento() {
                   </div>
 
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                    {getAvailableSlots().map((time) => (
-                      <button
-                        key={time}
-                        onClick={() => handleTimeSelect(time)}
-                        className={cn(
-                          "py-3 px-4 rounded-xl text-center font-medium transition-all border-2",
-                          formData.time === time
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-muted/50 hover:bg-primary/10 border-transparent hover:border-primary/50"
-                        )}
-                      >
-                        {time}
-                      </button>
-                    ))}
+                    {getAvailableSlots().map((time) => {
+                      const remaining = getSlotsRemaining(time);
+                      return (
+                        <button
+                          key={time}
+                          onClick={() => handleTimeSelect(time)}
+                          className={cn(
+                            "py-3 px-4 rounded-xl text-center transition-all border-2 flex flex-col items-center",
+                            formData.time === time
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-muted/50 hover:bg-primary/10 border-transparent hover:border-primary/50"
+                          )}
+                        >
+                          <span className="font-medium">{time}</span>
+                          <span className={cn(
+                            "text-xs mt-1",
+                            formData.time === time ? "text-primary-foreground/80" : "text-muted-foreground"
+                          )}>
+                            {remaining} {remaining === 1 ? "vaga" : "vagas"}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {getAvailableSlots().length === 0 && (
@@ -346,9 +368,9 @@ export default function Agendamento() {
                     </p>
                   )}
 
-                  {occupiedSlots.length > 0 && (
+                  {Object.keys(slotCounts).length > 0 && (
                     <p className="text-sm text-muted-foreground mt-4 text-center">
-                      Horários já reservados não são exibidos
+                      Cada sessão dura 1 hora. Vagas limitadas a 3 por horário.
                     </p>
                   )}
                 </div>
