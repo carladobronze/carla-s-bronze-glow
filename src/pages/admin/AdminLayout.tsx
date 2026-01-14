@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Calendar, DollarSign, Tag, Settings, LogOut, Sparkles, Menu, X, Home } from "lucide-react";
+import { LayoutDashboard, Calendar, DollarSign, Tag, Settings, LogOut, Sparkles, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import type { User } from "@supabase/supabase-js";
@@ -74,9 +74,6 @@ export default function AdminLayout() {
             {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2 ml-auto">
-            <Link to="/" className="p-2 rounded-lg hover:bg-muted transition-colors" title="Voltar para Home">
-              <Home className="w-5 h-5" />
-            </Link>
             <ThemeToggle />
             <Link to="/" className="text-sm text-muted-foreground hover:text-primary hidden sm:block">Ver site</Link>
           </div>
